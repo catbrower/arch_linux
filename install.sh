@@ -5,7 +5,7 @@ echo "Please enter the drive you wish to install to. Be careful"
 read drive
 
 #File system setup
-cryptsetup -y -v luksFormat "${drive}2" cryptroot
+cryptsetup -y -v luksFormat "${drive}2"
 cryptsetup open "${drive}2" cryptroot
 mkfs.ext4 /dev/mapper/cryptroot
 mkfs.fat -F32 "${drive}1"
