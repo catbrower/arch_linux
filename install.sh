@@ -18,16 +18,18 @@ pacman -S reflector
 reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
 pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
-cp ./mkinitcpio.conf /mnt/etc
-cp ./grub /mnt/etc/default
-cp ./hosts /mnt/etc
+pacman -S xorg xorg-server
+pacman -S gnome
+systemctl start gdm.service
+systemctl enable gdm.service
+systemctl enable NetworkManager.service
 
 arch-chroot /mnt
 ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 hwclock --systohc
 locale-gen
-echo "KEYMAP=en-latin1" >> /etc/vconsole.conf
-echo "device" /etc/hostname
+echo "KEYMAP=en-latin1" > /etc/vconsole.conf
+echo "device" > /etc/hostname
 echo "Setting root password"
 passwd
 
@@ -35,7 +37,14 @@ passwd
 pacman -S grub efibootmgr
 mkdir /boot/efi
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
-grub-mkconfig -o /mnt/boot/grub/grub.cfg
-mkinitcpio -P
+exit
 
-#e734fa5f-15c5-4649-8e8a-0d1b3d17d871
+#Move config files
+cp ./mkinitcpio.conf /mnt/etc
+cp ./grub /mnt/etc/default
+cp ./hosts /mnt/etc
+
+#Regen files
+arch-chroot /mnt
+grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -P
