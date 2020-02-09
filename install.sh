@@ -18,37 +18,11 @@ echo "Install Arch"
 pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
 
-arch-chroot /mnt
-
-#Configure Arch
-echo "Configure Arch"
-pacman -S xorg xorg-server
-pacman -S gnome
-systemctl start gdm.service
-systemctl enable gdm.service
-systemctl enable NetworkManager.service
-ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
-hwclock --systohc
-locale-gen
-echo "KEYMAP=en-latin1" > /etc/vconsole.conf
-echo "device" > /etc/hostname
-echo "Setting root password"
-passwd
-
-#install Bootloader
-pacman -S grub efibootmgr
-mkdir /boot/efi
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
-
-exit
-
 #Move config files
-echo "Copy files and regen conf"
-cp ./mkinitcpio.conf /mnt/etc
-cp ./grub /mnt/etc/default
-cp ./hosts /mnt/etc
+cp ./mkinitcpio.conf /mnt/files
+cp ./grub /mnt/files
+cp ./hosts /mnt/files
+cp ./install2.sh /mnt/install.sh
 
-#Regen files
 arch-chroot /mnt
-grub-mkconfig -o /boot/grub/grub.cfg
-mkinitcpio -P
+
