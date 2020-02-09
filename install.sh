@@ -4,6 +4,9 @@ echo "Ensure that you are connected to the internet"
 echo "Please enter the drive you wish to install to. Be careful"
 read drive
 
+#Get UUID of encrypted device
+UUID="$(blkid ${drive}2 -s UUID -o value)"
+
 #File system setup
 cryptsetup -y -v luksFormat "${drive}2"
 cryptsetup open "${drive}2" cryptroot
@@ -19,10 +22,11 @@ pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
 
 #Move config files
+mkdir /mnt/files
+sed "s/<uuid>/${UUID}" ./grub
 cp ./mkinitcpio.conf /mnt/files
 cp ./grub /mnt/files
 cp ./hosts /mnt/files
 cp ./install2.sh /mnt/install.sh
 
 arch-chroot /mnt
-

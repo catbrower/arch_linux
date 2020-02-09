@@ -10,14 +10,14 @@ echo "Set root password"
 passwd
 
 #install Bootloader
-pacman -S grub efibootmgr
 mkdir /boot/efi
+pacman -S grub efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 
 #Move files
 cp /files/mkinitcpio.conf /etc
-cp /files/grub /etc/default
 cp /files/hosts /etc
+cp /files/grub /etc/default/grub
 
 grub-mkconfig -o /boot/grub/grub.cfg
 mkinitcpio -P
